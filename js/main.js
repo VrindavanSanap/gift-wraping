@@ -1,66 +1,96 @@
-var points = []
-var n_points = 100
-var vertices = []
+var points = [];
+var n_points = 30;
+var vertices = [];
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
     createCanvas(400, 400);
     for (let i = 0; i < n_points; i++) {
-        points.push(new Point(200, 200))
+        points.push(new Point(400, 400));
+    }
+    background(0);
+}
+
+function get_angle(point1, point2) {
+    let angle = 0;
+    let dy = point1.y - point2.y;
+    let dx = point1.x - point2.x;
+
+    angle = Math.atan2(dy, dx);
+    angle = rad_to_deg(angle);
+    if (angle < 0) {
+        angle += 360;
     }
 
+    return angle;
 }
+
 function add_vertex() {
-    let higest_y = 0
-    let lowest_point;
     if (vertices.length == 0) {
-        // find bottom most vertex
-        for (point of points) {
-            if (point.y > higest_y) {
-                higest_y = point.y
-                lowest_point = point
+        // Find lowest point
+        let lowest_y = 0;
+        let lowest_point;
+        for (let point of points) {
+            if (point.y > lowest_y) {
+                lowest_y = point.y;
+                lowest_point = point;
             }
         }
         lowest_point.set_vertex();
-        vertices.push(lowest_point)
-    }
-    else if (vertices.length < 20) {
-        let last_vertex = vertices[vertices.length - 1]
-        let highest_angle = last_vertex.angle(points[0]) ;
+        vertices.push(lowest_point);
+    } else if (vertices.length == 1) {
+        let highest_angle = 0;
+        let highest_point;
+        for (let point of points) {
+            let angle = point.get_angle(vertices[0]);
+            if (angle > highest_angle) {
+                highest_angle = angle;
+                highest_point = point;
+            }
+        }
+        highest_point.set_vertex();
+        vertices.push(highest_point);
+    } else if (vertices[vertices.length - 1] == vertices[0]) {
+        console.log("Finished");
+        return;
+    } else {
+        let highest_point = null;
+        let vertices_len = vertices.length;
+        let prev1 = vertices[vertices_len - 1];
 
-        let highest_angle_point;
-        for (point of points) {
-            if (point != last_vertex ) {
-                let angle = last_vertex.angle(point);
-                if (angle >= highest_angle) {
-                    highest_angle = angle
+        for (let i = 0; i < points.length; i++) {
+            let point = points[i];
 
-                    highest_angle_point = point
+            if (!highest_point) {
+                if (!point.is_vertex) {
+                    highest_point = point;
+                }
+            } else {
+                if (point != prev1) {
+                    let a = highest_point.sub(prev1);
+                    let b = point.sub(prev1);
+                    let cross = a.cross(b);
+                    if (cross > 0) {
+                        highest_point = point;
+                    }
                 }
             }
         }
-        highest_angle_point.set_vertex()
-        vertices.push(highest_angle_point)
-        console.log(highest_angle)
+        highest_point.set_vertex();
+        vertices.push(highest_point);
     }
 }
 function draw() {
-    background(0)
+    // 
     fill(255)
     strokeWeight(0)
-    for (point of points) {
+    for (let i = 0; i < vertices.length - 1; i++) {
+        vertices[i].line(vertices[i + 1])
+    }
+    for (let point of points) {
         point.display()
     }
-    if(vertices.length){
-        vertices[vertices.length -1].highlight()
-    }
-    stroke(255)
-    strokeWeight(1)
-
-    for (let i = 0; i < vertices.length - 1; i++) {
-        line(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y)
-    }
-
-
+    add_vertex()
 }
 function mouseClicked() {
     add_vertex()
@@ -69,3 +99,5 @@ function mouseClicked() {
 function windowResized() {
     // resizeCanvas(windowWidth, windowHeight);
 }
+
+
