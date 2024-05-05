@@ -51,7 +51,6 @@ function add_vertex() {
         highest_point.set_vertex();
         vertices.push(highest_point);
     } else if (vertices[vertices.length - 1] == vertices[0]) {
-        console.log("Finished");
         return;
     } else {
         let highest_point = null;
@@ -80,8 +79,15 @@ function add_vertex() {
         vertices.push(highest_point);
     }
 }
+function reset() {
+    points = []
+    for (let i = 0; i < n_points; i++) {
+        points.push(new Point(400, 400));
+    }
+    vertices = []
+}
 function draw() {
-    // 
+    background(0)
     fill(255)
     strokeWeight(0)
     for (let i = 0; i < vertices.length - 1; i++) {
