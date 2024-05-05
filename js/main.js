@@ -4,7 +4,9 @@ var vertices = [];
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    createCanvas(400, 400);
+    const canvas = createCanvas(400, 400);
+    canvas.parent('canvas');
+
     for (let i = 0; i < n_points; i++) {
         points.push(new Point(400, 400));
     }

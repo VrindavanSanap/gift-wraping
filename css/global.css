@@ -8,13 +8,16 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
 h1{
   margin-left: 10px;
 }
 h4{
   margin-left: 15px;
 }
-
+p{
+    margin-left: 10px;
+}
 
 canvas{
   margin-left: 10px;
